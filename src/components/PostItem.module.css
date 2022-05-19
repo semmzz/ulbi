@@ -1,0 +1,77 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.post {
+    margin: 15px;
+    background-color: #c9d8f6;
+    width: 650px;
+    padding: 10px;
+    border: 2px solid cornflowerblue;
+    border-radius: 7px;
+    transition: all 1s cubic-bezier(.23, 1, 0.32, 1);
+}
+
+.post:hover{
+    background-color: #5458d4;
+
+}
+
+
+.post__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post__btns {
+}
+
+/* CSS */
+.button__deletePost {
+    appearance: none;
+    background-color: transparent;
+    border: 2px solid #4784ea;
+    border-radius: 15px;
+    box-sizing: border-box;
+    color: #3c8cc9;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Roobert, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 16px;
+    font-weight: 600;
+    line-height: normal;
+    margin: 0;
+    min-height: 30px;
+    min-width: 0;
+    outline: none;
+    padding: 9px 15px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: 100%;
+    will-change: transform;
+}
+
+.button__deletePost:disabled {
+    pointer-events: none;
+}
+
+.button__deletePost:hover {
+
+    color: #fff;
+    background-color: #1A1A1A;
+    border-color: #1A1A1A;
+    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+    transform: translateY(-2px);
+}
+
+.button__deletePost:active {
+    box-shadow: none;
+    transform: translateY(0);
+}
