@@ -6,6 +6,8 @@ import PostForm from "./components/PostForm";
 import MySelect from "./components/UI/select/MySelect";
 import MyInput from "./components/UI/input/MyInput";
 import PostFilter from "./components/PostFilter";
+import MyModal from "./components/UI/modal/MyModal";
+import MyButton from "./components/UI/button/MyButton";
 
 const languages2 = [
     {id: 1, title: 'Aa', body: 'aa'},
@@ -29,6 +31,7 @@ function App() {
 
     const createPost = newPost => {
         setPosts([...posts, newPost])
+        setVisibleModal(false)
     }
 
     const removePost = post => {
@@ -49,13 +52,23 @@ function App() {
         return sortedPost.filter(w => w.title.toLowerCase().includes(filter.query))
     }, [filter.query, sortedPost])
 
+    const [visibleModal, setVisibleModal] = useState(false)
+
     return (
         <div className="App">
             <div className="wrapper">
-                <PostForm
-                    create={createPost}
-                />
-                <hr style={{height:'5px', margin: '10px', }}/>
+                <MyButton
+                    style={{margin: '15px 0'}}
+                onClick={_=> setVisibleModal(true)}
+                >Create Post</MyButton>
+                <MyModal
+                    visible={visibleModal}
+                    setVisible={setVisibleModal}
+                >
+                    <PostForm
+                        create={createPost}
+                    />
+                </MyModal>
 
                 <PostFilter
                     filter={filter}
@@ -67,7 +80,6 @@ function App() {
                     title={'List of posts:'}
                     remove={removePost}
                 />
-                }
 
 
             </div>
