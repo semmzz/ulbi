@@ -1,65 +1,48 @@
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import './components/PostItem.module.css';
 import './App.css';
 import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
-import MySelect from "./components/UI/select/MySelect";
-import MyInput from "./components/UI/input/MyInput";
 import PostFilter from "./components/PostFilter";
 import MyModal from "./components/UI/modal/MyModal";
 import MyButton from "./components/UI/button/MyButton";
-
-const languages2 = [
-    {id: 1, title: 'Aa', body: 'aa'},
-    {id: 3, title: 'AA', body: 'gg'},
-    {id: 2, title: 'aa', body: 'cc'},
-    {id: 4, title: 'aA', body: 'zz'},
-
-]
-
-const languages = [
-    {id: 5, title: 'C', body: 'Description'},
-    {id: 6, title: 'C#', body: 'Description'},
-    {id: 7, title: 'Pascal', body: 'Description'},
-    {id: 8, title: 'GoLang', body: 'Description'},
-]
-
+import {usePosts} from "./hooks/usePosts";
+import PostService from "./API/PostService";
+import Loader from "./components/UI/Loader/Loader";
+import {useFetching} from "./hooks/useFetching";
 
 function App() {
 
-    const [posts, setPosts] = useState(languages);
+    const [posts, setPosts] = useState([]);
+    const [filter, setFilter] = useState({sort: '', query: ''});
+    const [visibleModal, setVisibleModal] = useState(false);
+    const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
+
+    const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
+        const posts = await PostService.getAll()
+        setPosts(posts)
+    })
 
     const createPost = newPost => {
-        setPosts([...posts, newPost])
-        setVisibleModal(false)
+        setPosts([...posts, newPost]);
+        setVisibleModal(false);
     }
 
     const removePost = post => {
-        setPosts(posts.filter(p => p.id !== post.id))
+        setPosts(posts.filter(p => p.id !== post.id));
     }
 
-    const [filter, setFilter] = useState({sort: '', query: ''})
 
-
-    const sortedPost = useMemo(() => {
-        if (filter.sort) {
-            return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]))
-        }
-        return posts;
-    }, [posts, filter.sort])
-
-    const sortedAndSearchedPosts = useMemo(() => {
-        return sortedPost.filter(w => w.title.toLowerCase().includes(filter.query))
-    }, [filter.query, sortedPost])
-
-    const [visibleModal, setVisibleModal] = useState(false)
+    useEffect(() => {
+        fetchPosts()
+    }, [])
 
     return (
         <div className="App">
             <div className="wrapper">
                 <MyButton
                     style={{margin: '15px 0'}}
-                onClick={_=> setVisibleModal(true)}
+                    onClick={_ => setVisibleModal(true)}
                 >Create Post</MyButton>
                 <MyModal
                     visible={visibleModal}
@@ -74,13 +57,18 @@ function App() {
                     filter={filter}
                     setFilter={setFilter}
                 />
-
-                <PostList
-                    posts={sortedAndSearchedPosts}
-                    title={'List of posts:'}
-                    remove={removePost}
-                />
-
+                {postError && <h1>An error has occurred: {postError}</h1>
+                }
+                {isPostsLoading
+                    ? <div style={{display: 'flex', justifyContent: 'center', marginTop: 25}}>
+                        <Loader/>
+                    </div>
+                    : <PostList
+                        posts={sortedAndSearchedPosts}
+                        title={'List of posts:'}
+                        remove={removePost}
+                    />
+                }
 
             </div>
         </div>
